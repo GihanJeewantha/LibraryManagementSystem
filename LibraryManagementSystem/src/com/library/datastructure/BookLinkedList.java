@@ -39,4 +39,15 @@ public class BookLinkedList {
             current = current.next;
         }
     }
+
+    public Book findBookById(int id) {
+        Node current = head;
+        while (current != null) {
+            if (current.book.getId() == id) {
+                return current.book;
+            }
+            current = current.next;
+        }
+        return null;
+    }
 }

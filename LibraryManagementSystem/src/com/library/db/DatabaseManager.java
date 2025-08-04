@@ -37,16 +37,30 @@ public class DatabaseManager {
     }
 
     public void addBook(Book book) {
-        String sql = "INSERT INTO books (id, title, author, isbn, is_available) VALUES (?, ?, ?, ?, ?)";
+        String checkSql = "SELECT COUNT(*) FROM books WHERE isbn = ?";
+        String insertSql = "INSERT INTO books (title, author, isbn, is_available) VALUES (?, ?, ?, ?)";
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, book.getId());
-            stmt.setString(2, book.getTitle());
-            stmt.setString(3, book.getAuthor());
-            stmt.setString(4, book.getIsbn());
-            stmt.setBoolean(5, book.isAvailable());
-            stmt.executeUpdate();
-            System.out.println("Book added to database: " + book.getTitle());
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            // Check if ISBN already exists
+            checkStmt.setString(1, book.getIsbn());
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    // ISBN doesn't exist, proceed with insertion
+                    insertStmt.setString(1, book.getTitle());
+                    insertStmt.setString(2, book.getAuthor());
+                    insertStmt.setString(3, book.getIsbn());
+                    insertStmt.setBoolean(4, book.isAvailable());
+                    insertStmt.executeUpdate();
+                    try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            System.out.println("Book added to database with ID: " + generatedKeys.getInt(1));
+                        }
+                    }
+                } else {
+                    System.out.println("Book with ISBN " + book.getIsbn() + " already exists, skipping insertion.");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,6 +76,19 @@ public class DatabaseManager {
                         rs.getString("isbn"), rs.getBoolean("is_available"));
                 System.out.println(book);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateBookAvailability(int bookId, boolean available) {
+        String sql = "UPDATE books SET is_available = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, available);
+            stmt.setInt(2, bookId);
+            stmt.executeUpdate();
+            System.out.println("Updated availability for book ID: " + bookId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
