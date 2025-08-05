@@ -89,6 +89,6 @@ public class Library {
 
     public void displayBooks() {
         bookList.displayBooks();
-        dbManager.displayAllBooks();
+        // Remove dbManager.displayAllBooks();
     }
 }
