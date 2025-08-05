@@ -17,7 +17,8 @@ public class Main {
             System.out.println("4. Return Book");
             System.out.println("5. Delete Book");
             System.out.println("6. Exit");
-            System.out.print("Enter your choice (1-6): ");
+            System.out.println("7. Search Books");
+            System.out.print("Enter your choice (1-7): ");
 
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
@@ -76,8 +77,13 @@ public class Main {
                         System.out.println("Exiting Library Management System. Goodbye!");
                         scanner.close();
                         System.exit(0);
+                    case 7:
+                        System.out.print("Enter search query (title, author, or ISBN): ");
+                        String query = scanner.nextLine().trim();
+                        library.searchBooks(query);
+                        break;
                     default:
-                        System.out.println("Invalid choice. Please enter a number between 1 and 6.");
+                        System.out.println("Invalid choice. Please enter a number between 1 and 7.");
                 }
             } else {
                 System.out.println("Error: Please enter a valid number.");

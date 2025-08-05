@@ -89,14 +89,12 @@ public class Library {
             System.out.println("Error: Book ID must be a positive number.");
             return;
         }
-        // First, remove from the database
         String sql = "DELETE FROM books WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, bookId);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                // If deletion from database succeeds, remove from linked list
                 if (bookList.removeBookById(bookId)) {
                     System.out.println("Book deleted with ID: " + bookId);
                 } else {
@@ -116,6 +114,9 @@ public class Library {
 
     public void displayBooks() {
         bookList.displayBooks();
-        // Remove dbManager.displayAllBooks();
+    }
+
+    public void searchBooks(String query) {
+        bookList.searchBooks(query);
     }
 }

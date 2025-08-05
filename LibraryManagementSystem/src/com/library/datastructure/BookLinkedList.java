@@ -68,4 +68,27 @@ public class BookLinkedList {
         }
         return false;
     }
+
+    public void searchBooks(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            System.out.println("Error: Search query cannot be empty.");
+            return;
+        }
+        query = query.toLowerCase().trim();
+        boolean found = false;
+        Node current = head;
+        while (current != null) {
+            Book book = current.book;
+            if (book.getTitle().toLowerCase().contains(query) ||
+                    book.getAuthor().toLowerCase().contains(query) ||
+                    book.getIsbn().toLowerCase().contains(query)) {
+                System.out.println(book);
+                found = true;
+            }
+            current = current.next;
+        }
+        if (!found) {
+            System.out.println("No books found matching the query: " + query);
+        }
+    }
 }
