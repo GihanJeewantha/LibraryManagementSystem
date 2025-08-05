@@ -119,4 +119,12 @@ public class Library {
     public void searchBooks(String query) {
         bookList.searchBooks(query);
     }
+
+    public void saveToFile(String filename) {
+        bookList.saveToFile(filename, dbManager);
+    }
+
+    public void loadFromFile(String filename) {
+        bookList.loadFromFile(filename, dbManager);
+    }
 }

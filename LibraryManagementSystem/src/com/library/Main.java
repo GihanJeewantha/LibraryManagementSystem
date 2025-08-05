@@ -18,7 +18,9 @@ public class Main {
             System.out.println("5. Delete Book");
             System.out.println("6. Exit");
             System.out.println("7. Search Books");
-            System.out.print("Enter your choice (1-7): ");
+            System.out.println("8. Save to File");
+            System.out.println("9. Load from File");
+            System.out.print("Enter your choice (1-9): ");
 
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
@@ -82,8 +84,26 @@ public class Main {
                         String query = scanner.nextLine().trim();
                         library.searchBooks(query);
                         break;
+                    case 8:
+                        System.out.print("Enter filename to save: ");
+                        String saveFilename = scanner.nextLine().trim();
+                        if (saveFilename.isEmpty()) {
+                            System.out.println("Error: Filename cannot be empty.");
+                        } else {
+                            library.saveToFile(saveFilename);
+                        }
+                        break;
+                    case 9:
+                        System.out.print("Enter filename to load: ");
+                        String loadFilename = scanner.nextLine().trim();
+                        if (loadFilename.isEmpty()) {
+                            System.out.println("Error: Filename cannot be empty.");
+                        } else {
+                            library.loadFromFile(loadFilename);
+                        }
+                        break;
                     default:
-                        System.out.println("Invalid choice. Please enter a number between 1 and 7.");
+                        System.out.println("Invalid choice. Please enter a number between 1 and 9.");
                 }
             } else {
                 System.out.println("Error: Please enter a valid number.");
