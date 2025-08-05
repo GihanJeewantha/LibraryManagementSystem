@@ -15,8 +15,9 @@ public class Main {
             System.out.println("2. Add Book");
             System.out.println("3. Borrow Book");
             System.out.println("4. Return Book");
-            System.out.println("5. Exit");
-            System.out.print("Enter your choice (1-5): ");
+            System.out.println("5. Delete Book");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice (1-6): ");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -45,11 +46,16 @@ public class Main {
                     library.returnBook(returnId);
                     break;
                 case 5:
+                    System.out.print("Enter book ID to delete: ");
+                    int deleteId = scanner.nextInt();
+                    library.deleteBook(deleteId);
+                    break;
+                case 6:
                     System.out.println("Exiting Library Management System. Goodbye!");
                     scanner.close();
                     System.exit(0);
                 default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                    System.out.println("Invalid choice. Please enter a number between 1 and 6.");
             }
         }
     }

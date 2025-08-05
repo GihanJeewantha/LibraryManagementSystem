@@ -50,4 +50,22 @@ public class BookLinkedList {
         }
         return null;
     }
+
+    public boolean removeBookById(int id) {
+        Node current = head;
+        Node prev = null;
+        while (current != null) {
+            if (current.book.getId() == id) {
+                if (prev == null) {
+                    head = current.next;
+                } else {
+                    prev.next = current.next;
+                }
+                return true;
+            }
+            prev = current;
+            current = current.next;
+        }
+        return false;
+    }
 }

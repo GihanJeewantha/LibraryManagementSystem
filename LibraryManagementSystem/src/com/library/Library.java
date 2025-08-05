@@ -3,11 +3,7 @@ package com.library;
 import com.library.datastructure.BookLinkedList;
 import com.library.db.DatabaseManager;
 import com.library.model.Book;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Library {
     private BookLinkedList bookList;
@@ -61,6 +57,29 @@ public class Library {
             System.out.println("Book returned: " + book.getTitle());
         } else {
             System.out.println("Book not borrowed or not found.");
+        }
+    }
+
+    public void deleteBook(int bookId) {
+        // First, remove from the database
+        String sql = "DELETE FROM books WHERE id = ?";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                // If deletion from database succeeds, remove from linked list
+                if (bookList.removeBookById(bookId)) {
+                    System.out.println("Book deleted with ID: " + bookId);
+                } else {
+                    System.out.println("Book not found in linked list with ID: " + bookId);
+                }
+            } else {
+                System.out.println("Book not found with ID: " + bookId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error deleting book with ID: " + bookId);
         }
     }
 
