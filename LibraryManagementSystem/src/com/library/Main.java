@@ -14,8 +14,9 @@ public class Main {
             System.out.println("1. Display Books");
             System.out.println("2. Add Book");
             System.out.println("3. Borrow Book");
-            System.out.println("4. Exit");
-            System.out.print("Enter your choice (1-4): ");
+            System.out.println("4. Return Book");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice (1-5): ");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -31,20 +32,24 @@ public class Main {
                     String author = scanner.nextLine();
                     System.out.print("Enter ISBN: ");
                     String isbn = scanner.nextLine();
-                    // Using a dummy ID (e.g., 0) since it's auto-incremented
                     library.addBook(new Book(0, title, author, isbn, true));
                     break;
                 case 3:
                     System.out.print("Enter book ID to borrow: ");
-                    int bookId = scanner.nextInt();
-                    library.borrowBook(bookId);
+                    int borrowId = scanner.nextInt();
+                    library.borrowBook(borrowId);
                     break;
                 case 4:
+                    System.out.print("Enter book ID to return: ");
+                    int returnId = scanner.nextInt();
+                    library.returnBook(returnId);
+                    break;
+                case 5:
                     System.out.println("Exiting Library Management System. Goodbye!");
                     scanner.close();
                     System.exit(0);
                 default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
             }
         }
     }

@@ -53,6 +53,17 @@ public class Library {
         }
     }
 
+    public void returnBook(int bookId) {
+        Book book = findBookById(bookId);
+        if (book != null && !book.isAvailable()) {
+            book.setAvailable(true);
+            dbManager.updateBookAvailability(bookId, true);
+            System.out.println("Book returned: " + book.getTitle());
+        } else {
+            System.out.println("Book not borrowed or not found.");
+        }
+    }
+
     private Book findBookById(int id) {
         return bookList.findBookById(id);
     }
