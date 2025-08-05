@@ -32,6 +32,12 @@ public class Library {
     }
 
     public void addBook(Book book) {
+        if (book == null || book.getTitle() == null || book.getTitle().trim().isEmpty() ||
+                book.getAuthor() == null || book.getAuthor().trim().isEmpty() ||
+                book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
+            System.out.println("Error: Book details cannot be null or empty.");
+            return;
+        }
         int generatedId = dbManager.addBook(book);
         if (generatedId != -1) {
             bookList.addBook(book); // Add to linked list with updated ID
@@ -39,28 +45,50 @@ public class Library {
     }
 
     public void borrowBook(int bookId) {
+        if (bookId <= 0) {
+            System.out.println("Error: Book ID must be a positive number.");
+            return;
+        }
         Book book = findBookById(bookId);
         if (book != null && book.isAvailable()) {
             book.setAvailable(false);
-            dbManager.updateBookAvailability(bookId, false);
-            System.out.println("Book borrowed: " + book.getTitle());
+            try {
+                dbManager.updateBookAvailability(bookId, false);
+                System.out.println("Book borrowed: " + book.getTitle());
+            } catch (Exception e) {
+                System.out.println("Error updating database: " + e.getMessage());
+                book.setAvailable(true); // Revert change on failure
+            }
         } else {
             System.out.println("Book not available or not found.");
         }
     }
 
     public void returnBook(int bookId) {
+        if (bookId <= 0) {
+            System.out.println("Error: Book ID must be a positive number.");
+            return;
+        }
         Book book = findBookById(bookId);
         if (book != null && !book.isAvailable()) {
             book.setAvailable(true);
-            dbManager.updateBookAvailability(bookId, true);
-            System.out.println("Book returned: " + book.getTitle());
+            try {
+                dbManager.updateBookAvailability(bookId, true);
+                System.out.println("Book returned: " + book.getTitle());
+            } catch (Exception e) {
+                System.out.println("Error updating database: " + e.getMessage());
+                book.setAvailable(false); // Revert change on failure
+            }
         } else {
             System.out.println("Book not borrowed or not found.");
         }
     }
 
     public void deleteBook(int bookId) {
+        if (bookId <= 0) {
+            System.out.println("Error: Book ID must be a positive number.");
+            return;
+        }
         // First, remove from the database
         String sql = "DELETE FROM books WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
@@ -78,8 +106,7 @@ public class Library {
                 System.out.println("Book not found with ID: " + bookId);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error deleting book with ID: " + bookId);
+            System.out.println("Error deleting book with ID: " + bookId + ": " + e.getMessage());
         }
     }
 
