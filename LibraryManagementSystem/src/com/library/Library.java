@@ -4,6 +4,11 @@ import com.library.datastructure.BookLinkedList;
 import com.library.db.DatabaseManager;
 import com.library.model.Book;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Library {
     private BookLinkedList bookList;
     private DatabaseManager dbManager;
@@ -12,6 +17,22 @@ public class Library {
         this.bookList = new BookLinkedList();
         this.dbManager = new DatabaseManager();
         dbManager.createDatabaseAndTable(); // Ensure database and table exist
+        syncBookList(); // Sync with database
+    }
+
+    private void syncBookList() {
+        bookList = new BookLinkedList(); // Reset the list
+        try (Connection conn = dbManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM books")) {
+            while (rs.next()) {
+                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"),
+                        rs.getString("isbn"), rs.getBoolean("is_available"));
+                bookList.addBook(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addBook(Book book) {
@@ -20,7 +41,6 @@ public class Library {
     }
 
     public void borrowBook(int bookId) {
-        // Simulate finding and borrowing a book
         Book book = findBookById(bookId);
         if (book != null && book.isAvailable()) {
             book.setAvailable(false);

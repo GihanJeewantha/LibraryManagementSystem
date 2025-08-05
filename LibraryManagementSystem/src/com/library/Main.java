@@ -1,7 +1,5 @@
 package com.library;
 
-import com.library.model.Book;
-
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello and welcome to Library Management System!");
@@ -9,16 +7,13 @@ public class Main {
         // Initialize library
         Library library = new Library();
 
-        // Add a book
-        library.addBook(new Book(1, "Java Basics", "Gihan Jeewantha", "1234567890123", true));
-
-        // Display books
+        // Display existing books without adding a new one
         library.displayBooks();
 
-        // Borrow the book
+        // Attempt to borrow the book (already borrowed, should fail)
         library.borrowBook(1);
 
-        // Display books again to show change
+        // Display books again
         library.displayBooks();
     }
 }
