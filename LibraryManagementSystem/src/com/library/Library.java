@@ -36,8 +36,10 @@ public class Library {
     }
 
     public void addBook(Book book) {
-        bookList.addBook(book);
-        dbManager.addBook(book);
+        int generatedId = dbManager.addBook(book);
+        if (generatedId != -1) {
+            bookList.addBook(book); // Add to linked list with updated ID
+        }
     }
 
     public void borrowBook(int bookId) {

@@ -36,17 +36,15 @@ public class DatabaseManager {
         }
     }
 
-    public void addBook(Book book) {
+    public int addBook(Book book) {
         String checkSql = "SELECT COUNT(*) FROM books WHERE isbn = ?";
         String insertSql = "INSERT INTO books (title, author, isbn, is_available) VALUES (?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement checkStmt = conn.prepareStatement(checkSql);
              PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-            // Check if ISBN already exists
             checkStmt.setString(1, book.getIsbn());
             try (ResultSet rs = checkStmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
-                    // ISBN doesn't exist, proceed with insertion
                     insertStmt.setString(1, book.getTitle());
                     insertStmt.setString(2, book.getAuthor());
                     insertStmt.setString(3, book.getIsbn());
@@ -54,7 +52,10 @@ public class DatabaseManager {
                     insertStmt.executeUpdate();
                     try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
-                            System.out.println("Book added to database with ID: " + generatedKeys.getInt(1));
+                            int generatedId = generatedKeys.getInt(1);
+                            book.setId(generatedId); // Update the Book object with the generated ID
+                            System.out.println("Book added to database with ID: " + generatedId);
+                            return generatedId;
                         }
                     }
                 } else {
@@ -64,6 +65,7 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1; // Return -1 if insertion failed or skipped
     }
 
     public void displayAllBooks() {

@@ -24,6 +24,7 @@ public class Book {
 
     // Setters
     public void setAvailable(boolean available) { this.isAvailable = available; }
+    public void setId(int id) { this.id = id; } // New setter
 
     @Override
     public String toString() {
