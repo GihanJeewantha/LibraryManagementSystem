@@ -35,4 +35,4 @@ This project is a console-based Library Management System developed in Java. It 
 MIT License (or specify your preferred license).
 
 ## Contact
-For questions, reach out at [your-jeewantha.dgihan@gmail.com](mailto:jeewantha.dgihan@gmail.com).
+For questions, reach out at [jeewantha.dgihan@gmail.com](mailto:jeewantha.dgihan@gmail.com).
